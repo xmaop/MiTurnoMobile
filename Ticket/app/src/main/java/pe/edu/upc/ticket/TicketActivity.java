@@ -1,5 +1,7 @@
 package pe.edu.upc.ticket;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,9 +12,11 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -28,6 +32,7 @@ public class TicketActivity extends AppCompatActivity {
     private ImageView imageCompany;
     private TextView tviCompany, tviBranch, tviTime, tviNumber, tviPeople;
     private Button btnCancel, btnPostpone;
+    private AlertDialog.Builder cancerAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,8 @@ public class TicketActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ticket);
 
         findViews();
+        findButtons();
+        setButtonsActions();
         retrieveTicket();
         showValues();
         //Toast.makeText(this, getIntent().getStringExtra("qrCode"), Toast.LENGTH_LONG).show();
@@ -72,6 +79,11 @@ public class TicketActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private  void findButtons() {
+        btnCancel = (Button) findViewById(R.id.btnCancel);
+        btnPostpone = (Button) findViewById(R.id.btnPostpone);
     }
 
     private void findViews(){
@@ -118,5 +130,31 @@ public class TicketActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = mPrefs.getString("TICKET", "");
         mTicket = gson.fromJson(json, Ticket.class);
+    }
+
+    private void setButtonsActions() {
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancerAlert = new AlertDialog.Builder(TicketActivity.this);
+                cancerAlert.setTitle("Cancelar Turno de Aplicación");
+                cancerAlert.setMessage("¿Está seguro de cancelar su turno de atención?\nRecuerde que al confirmar esta acción deberá obtener un nuevo ticket si desea ser atendido.");
+                cancerAlert.setPositiveButton("SI",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //TODO:
+                            }
+                        });
+                cancerAlert.setNegativeButton("NO",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                cancerAlert.show();
+            }
+        });
     }
 }
