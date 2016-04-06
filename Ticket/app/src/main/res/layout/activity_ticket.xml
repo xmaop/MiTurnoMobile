@@ -20,11 +20,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/image1"
+                android:id="@+id/imageCompany"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:rotation="180"
                 android:scaleType="centerCrop"
                 android:src="@android:drawable/ic_menu_report_image" />
 
@@ -36,7 +35,7 @@
                 android:paddingStart="10dp">
 
                 <TextView
-                    android:id="@+id/tviEmpresa"
+                    android:id="@+id/tviCompany"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -45,7 +44,7 @@
                     android:textSize="18dp" />
 
                 <TextView
-                    android:id="@+id/tviSucursal"
+                    android:id="@+id/tviBranch"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="0.8"
@@ -73,7 +72,7 @@
             android:padding="8dp">
 
             <TextView
-                android:id="@+id/tviTiempo"
+                android:id="@+id/tviTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -84,10 +83,9 @@
                 android:textSize="84dp" />
 
             <TextView
-                android:id="@+id/tviRestante"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/tviTiempo"
+                android:layout_alignBottom="@id/tviTime"
                 android:gravity="center"
                 android:text="Tiempo restante"
                 android:textSize="14dp" />
@@ -95,12 +93,12 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tviTiempo"
+                android:layout_below="@id/tviTime"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/eteTurno"
+                    android:id="@+id/tviNumber"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -111,7 +109,7 @@
                     android:textSize="45dp" />
 
                 <TextView
-                    android:id="@+id/etePersonas"
+                    android:id="@+id/tviPeople"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -141,7 +139,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnCancelar"
+            android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -150,7 +148,7 @@
             android:textSize="20dp" />
 
         <Button
-            android:id="@+id/btnPosponer"
+            android:id="@+id/btnPostpone"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

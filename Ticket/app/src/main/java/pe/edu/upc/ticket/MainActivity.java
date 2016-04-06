@@ -1,27 +1,28 @@
 package pe.edu.upc.ticket;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.Date;
+
+import pe.edu.upc.ticket.model.Ticket;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                     barcodeInfo.post(new Runnable() {    // Use the post method of the TextView
                         public void run() {
                             cameraSource.stop();
-                            //Toast.makeText(MainActivity.this, barcodes.valueAt(0).displayValue, Toast.LENGTH_SHORT).show();
+                            requestTicket();
                             Intent intent = new Intent(MainActivity.this, TicketActivity.class);
                             intent.putExtra("qrCode", barcodes.valueAt(0).displayValue);
                             startActivity(intent);
@@ -111,5 +112,30 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void requestTicket(){
+        saveTicket(getTicket());
+    }
+
+    private Ticket getTicket(){
+        Ticket ticket = new Ticket();
+        ticket.setCompanyName("BBVA Banco Continental");
+        ticket.setCompanyBranch("Sucursal San Borja");
+        ticket.setTimeLeft(1000 * 60 * 62);
+        ticket.setServerTime(new Date());
+        ticket.setNumberTicket("AV-258");
+        ticket.setPeopleQuantity(4);
+
+        return ticket;
+    }
+
+    private void saveTicket(Ticket ticket){
+        SharedPreferences  mPrefs = getSharedPreferences("MyApp", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(ticket);
+        prefsEditor.putString("TICKET", json);
+        prefsEditor.commit();
     }
 }
