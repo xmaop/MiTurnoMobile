@@ -1,15 +1,20 @@
 package pe.edu.upc.ticket;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +33,7 @@ import pe.edu.upc.ticket.model.Ticket;
 public class TicketActivity extends AppCompatActivity {
 
     private Ticket mTicket = null;
+    public static final int NOTIFICACION_ID=1;
 
     private ImageView imageCompany;
     private TextView tviCompany, tviBranch, tviTime, tviNumber, tviPeople;
@@ -121,6 +127,7 @@ public class TicketActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 tviTime.setText("00:00");
+                sendNotificationTurnArrived();
             }
         }.start();
     }
@@ -156,5 +163,25 @@ public class TicketActivity extends AppCompatActivity {
                 cancerAlert.show();
             }
         });
+    }
+
+    private void sendNotificationTurnArrived() {
+        //Construction of implicit intent action
+        Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("http://developer.android.com/index.html"));
+        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,0);
+
+        //Construccion de la notificacion;
+        NotificationCompat.Builder builder= new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+        builder.setContentTitle("Notificacion de LLegada de Turno");
+        builder.setContentText("Tu turno ha llegado!");
+        builder.setSubText("Acercate a la ventanilla 5 para ser atendido.");
+
+        //Enviar la notificacion
+        NotificationManager notificationManager= (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICACION_ID,builder.build());
     }
 }
