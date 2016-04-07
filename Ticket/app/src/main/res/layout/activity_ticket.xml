@@ -40,7 +40,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="BBVA Banco Continental"
+                    android:text="Business"
                     android:textSize="18dp" />
 
                 <TextView
@@ -49,7 +49,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="0.8"
                     android:gravity="center_vertical"
-                    android:text="Sucursal San Borja"
+                    android:text="Branch"
                     android:textSize="14dp" />
             </LinearLayout>
         </TableRow>
@@ -66,34 +66,35 @@
         android:layout_weight="4"
         card_view:cardCornerRadius="4dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:padding="8dp">
 
             <TextView
                 android:id="@+id/tviTime"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:drawableEnd="@drawable/ic_timelapse_grey600_18dp"
                 android:drawablePadding="10dp"
-                android:text="00:23"
+                android:text="00:00"
                 android:textSize="84dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/tviTime"
                 android:gravity="center"
                 android:text="@string/time_left"
                 android:textSize="14dp" />
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tviTime"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
@@ -105,7 +106,7 @@
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_receipt_grey600_36dp"
                     android:gravity="center"
-                    android:text="AV-258"
+                    android:text="---"
                     android:textSize="45dp" />
 
                 <TextView
@@ -116,7 +117,7 @@
                     android:layout_weight="1"
                     android:drawableTop="@drawable/ic_account_multiple_grey600_36dp"
                     android:gravity="center"
-                    android:text="4"
+                    android:text="#"
                     android:textSize="45dp" />
             </TableRow>
 
@@ -128,7 +129,7 @@
                 android:drawableStart="@drawable/information_outline"
                 android:text="@string/ticket_disclaimer"
                 android:textSize="14dp" />
-        </RelativeLayout>
+        </LinearLayout>
     </android.support.v7.widget.CardView>
 
     <TableRow

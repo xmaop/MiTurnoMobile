@@ -1,13 +1,18 @@
 package pe.edu.upc.ticket;
 
 import android.app.AlertDialog;
+<<<<<<< HEAD
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+=======
+import android.app.ProgressDialog;
+>>>>>>> origin/master
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+<<<<<<< HEAD
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -16,6 +21,12 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
+=======
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.v7.app.AppCompatActivity;
+>>>>>>> origin/master
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +36,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 
 import pe.edu.upc.ticket.model.Ticket;
@@ -33,7 +45,11 @@ import pe.edu.upc.ticket.model.Ticket;
 public class TicketActivity extends AppCompatActivity {
 
     private Ticket mTicket = null;
+<<<<<<< HEAD
     public static final int NOTIFICACION_ID=1;
+=======
+    private ProgressDialog pDialog;
+>>>>>>> origin/master
 
     private ImageView imageCompany;
     private TextView tviCompany, tviBranch, tviTime, tviNumber, tviPeople;
@@ -45,12 +61,16 @@ public class TicketActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket);
 
-        findViews();
-        findButtons();
-        setButtonsActions();
-        retrieveTicket();
-        showValues();
-        //Toast.makeText(this, getIntent().getStringExtra("qrCode"), Toast.LENGTH_LONG).show();
+        try {
+            pDialog = ProgressDialog.show(this, "", "Loading ...", true);
+            findViews();
+            findButtons();
+            setButtonsActions();
+            retrieveTicket();
+            showValues();
+        }catch (Exception e) {
+            Toast.makeText(TicketActivity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -61,16 +81,20 @@ public class TicketActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onBackPressed() {
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        return super.onPrepareOptionsMenu(menu);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -102,7 +126,7 @@ public class TicketActivity extends AppCompatActivity {
     }
 
     private void showValues(){
-        Drawable draw = getResources().getDrawable(R.drawable.bbva);
+        /*Drawable draw = getResources().getDrawable(R.drawable.bbva);
         Bitmap bitmap = ((BitmapDrawable)draw).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -111,6 +135,7 @@ public class TicketActivity extends AppCompatActivity {
 
         byte[] imageByteArray = byteArrayImage;
         Bitmap bitmap2 = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+<<<<<<< HEAD
         imageCompany.setImageBitmap(bitmap2);
 
         tviCompany.setText(mTicket.getCompanyName());
@@ -130,6 +155,28 @@ public class TicketActivity extends AppCompatActivity {
                 sendNotificationTurnArrived();
             }
         }.start();
+=======
+        imageCompany.setImageBitmap(bitmap2);*/
+        if(mTicket!=null) {
+            new LoadImage().execute(mTicket.getStatus());
+            tviCompany.setText(mTicket.getCompanyName());
+            tviBranch.setText(mTicket.getCompanyBranch());
+            tviNumber.setText(mTicket.getNumberTicket());
+            tviPeople.setText(String.valueOf(mTicket.getPeopleQuantity()));
+            Long value = mTicket.getTimeLeft() - ((new Date()).getTime() - mTicket.getServerTime().getTime());
+            new CountDownTimer(value, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    tviTime.setText(String.format("%02d:%02d", millisUntilFinished / (60 * 60 * 1000), (millisUntilFinished / (60 * 1000)) % 60));
+                }
+
+                @Override
+                public void onFinish() {
+                    tviTime.setText("00:00");
+                }
+            }.start();
+        }
+>>>>>>> origin/master
     }
 
     private void retrieveTicket(){
@@ -165,6 +212,7 @@ public class TicketActivity extends AppCompatActivity {
         });
     }
 
+<<<<<<< HEAD
     private void sendNotificationTurnArrived() {
         //Construction of implicit intent action
         Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("http://developer.android.com/index.html"));
@@ -183,5 +231,33 @@ public class TicketActivity extends AppCompatActivity {
         //Enviar la notificacion
         NotificationManager notificationManager= (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICACION_ID,builder.build());
+=======
+
+    private Bitmap bitmap;
+    private class LoadImage extends AsyncTask<String, String, Bitmap> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected Bitmap doInBackground(String... args) {
+            try {
+                bitmap = BitmapFactory.decodeStream((InputStream)new URL(args[0]).getContent());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap image) {
+            if(image != null){
+                imageCompany.setImageBitmap(image);
+            }else{
+                Toast.makeText(TicketActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
+            }
+            if(pDialog != null && pDialog.isShowing()) pDialog.dismiss();
+        }
+>>>>>>> origin/master
     }
 }
