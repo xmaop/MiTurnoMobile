@@ -1,5 +1,6 @@
 package pe.edu.upc.ticket;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,13 +12,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Date;
@@ -39,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         cameraView = (SurfaceView)findViewById(R.id.camera_view);
+        WindowManager mWinMgr = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
+        int width = 500 + (mWinMgr.getDefaultDisplay().getWidth()-500)/2;
+        cameraView.getHolder().setFixedSize(width, width-100);
         barcodeInfo = (TextView)findViewById(R.id.code_info);
 
         qrReading();
@@ -103,9 +117,9 @@ public class MainActivity extends AppCompatActivity {
                     barcodeInfo.post(new Runnable() {    // Use the post method of the TextView
                         public void run() {
                             cameraSource.stop();
-                            requestTicket();
+                            requestTicket(barcodes.valueAt(0).displayValue);
                             Intent intent = new Intent(MainActivity.this, TicketActivity.class);
-                            intent.putExtra("qrCode", barcodes.valueAt(0).displayValue);
+                            //intent.putExtra("qrCode", barcodes.valueAt(0).displayValue);
                             startActivity(intent);
                         }
                     });
@@ -114,8 +128,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void requestTicket(){
-        saveTicket(getTicket());
+    private void requestTicket(String qrValue){
+        String url = "http://my-json-feed";
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, qrValue, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        Ticket ticket = gson.fromJson(response.toString(), Ticket.class);
+                        saveTicket(ticket);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("RequestTicket", "ERROR");
+                    }
+                });
+
+        queue.add(jsObjRequest);
     }
 
     private Ticket getTicket(){
@@ -134,8 +167,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences  mPrefs = getSharedPreferences("MyApp", MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(ticket);
-        prefsEditor.putString("TICKET", json);
+        if(ticket!=null) {
+            String json = gson.toJson(ticket);
+            prefsEditor.putString("TICKET", json);
+        }else{
+            prefsEditor.putString("TICKET", "");
+        }
         prefsEditor.commit();
     }
 }
