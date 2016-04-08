@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestTicket(String qrValue){
-        String url = "http://my-json-feed";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
