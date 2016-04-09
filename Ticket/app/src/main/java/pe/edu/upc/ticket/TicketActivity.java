@@ -156,16 +156,17 @@ public class TicketActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 cancerAlert = new AlertDialog.Builder(TicketActivity.this);
-                cancerAlert.setTitle("Cancelar Turno de Aplicación");
-                cancerAlert.setMessage("¿Está seguro de cancelar su turno de atención?\nRecuerde que al confirmar esta acción deberá obtener un nuevo ticket si desea ser atendido.");
-                cancerAlert.setPositiveButton("SI",
+                cancerAlert.setTitle(R.string.cancel_turn_dialog_title);
+                cancerAlert.setMessage(R.string.cancel_turn_dialog_message);
+                cancerAlert.setPositiveButton(R.string.cancel_turn_dialog_yes,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO:
+                                cancelTicket();
+                                startActivity(new Intent(TicketActivity.this, MainActivity.class));
                             }
                         });
-                cancerAlert.setNegativeButton("NO",
+                cancerAlert.setNegativeButton(R.string.cancel_turn_dialog_no,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -175,6 +176,13 @@ public class TicketActivity extends AppCompatActivity {
                 cancerAlert.show();
             }
         });
+    }
+
+    private void cancelTicket(){
+        SharedPreferences  mPrefs = getSharedPreferences("MyApp", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        prefsEditor.putString("TICKET", "");
+        prefsEditor.commit();
     }
 
     private Bitmap bitmap;

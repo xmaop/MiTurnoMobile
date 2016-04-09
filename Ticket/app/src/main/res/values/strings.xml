@@ -5,4 +5,8 @@
     <string name="ticket_disclaimer">Recuerde que el número de personas y tiempo restante es un estimado aproximado.</string>
     <string name="button_cancel_text">Cancelar</string>
     <string name="button_postpone_text">Posponer</string>
+    <string name="cancel_turn_dialog_title">Cancelar Turno de Aplicación</string>
+    <string name="cancel_turn_dialog_message">¿Está seguro de cancelar su turno de atención?\nRecuerde que al confirmar esta acción deberá obtener un nuevo ticket si desea ser atendido.</string>
+    <string name="cancel_turn_dialog_yes">SI</string>
+    <string name="cancel_turn_dialog_no">NO</string>
 </resources>
