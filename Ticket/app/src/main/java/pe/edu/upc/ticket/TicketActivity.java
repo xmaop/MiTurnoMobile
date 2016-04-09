@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -40,7 +51,7 @@ public class TicketActivity extends AppCompatActivity {
     private ImageView imageCompany;
     private TextView tviCompany, tviBranch, tviTime, tviNumber, tviPeople;
     private Button btnCancel, btnPostpone;
-    private AlertDialog.Builder cancerAlert;
+    private AlertDialog.Builder cancerAlert, postponeAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,12 +187,75 @@ public class TicketActivity extends AppCompatActivity {
                 cancerAlert.show();
             }
         });
+
+        btnPostpone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postponeAlert = new AlertDialog.Builder(TicketActivity.this);
+                postponeAlert.setTitle(R.string.cancel_turn_dialog_title);
+                postponeAlert.setMessage(R.string.cancel_turn_dialog_message);
+                postponeAlert.setPositiveButton(R.string.cancel_turn_dialog_yes,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                refreshTicket();
+                            }
+                        });
+                postponeAlert.setNegativeButton(R.string.cancel_turn_dialog_no,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                postponeAlert.show();
+            }
+        });
     }
 
     private void cancelTicket(){
         SharedPreferences  mPrefs = getSharedPreferences("MyApp", MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         prefsEditor.putString("TICKET", "");
+        prefsEditor.commit();
+    }
+
+    private void refreshTicket(){
+        int newToken = (int)(Math.random()*9000)+1000;
+        String url = "http://ticketserver-xmaop.c9users.io/token.php?token=" + newToken;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                        Ticket ticket = gson.fromJson(response.toString(), Ticket.class);
+                        saveTicket(ticket);
+                        retrieveTicket();
+                        showValues();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("RequestTicket", "ERROR");
+                    }
+                });
+
+        queue.add(jsObjRequest);
+    }
+
+    private void saveTicket(Ticket ticket){
+        SharedPreferences  mPrefs = getSharedPreferences("MyApp", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        if(ticket!=null) {
+            String json = gson.toJson(ticket);
+            prefsEditor.putString("TICKET", json);
+        }else{
+            prefsEditor.putString("TICKET", "");
+        }
         prefsEditor.commit();
     }
 
