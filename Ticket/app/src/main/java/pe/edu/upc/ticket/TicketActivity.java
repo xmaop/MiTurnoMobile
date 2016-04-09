@@ -1,15 +1,21 @@
 package pe.edu.upc.ticket;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +33,7 @@ import pe.edu.upc.ticket.model.Ticket;
 
 public class TicketActivity extends AppCompatActivity {
 
+    public static final int NOTIFICACION_ID=1;
     private Ticket mTicket = null;
     private ProgressDialog pDialog;
 
@@ -131,6 +138,7 @@ public class TicketActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     tviTime.setText("00:00");
+                    sendNotificationTurnArrived();
                 }
             }.start();
         }
@@ -148,16 +156,17 @@ public class TicketActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 cancerAlert = new AlertDialog.Builder(TicketActivity.this);
-                cancerAlert.setTitle("Cancelar Turno de Aplicación");
-                cancerAlert.setMessage("¿Está seguro de cancelar su turno de atención?\nRecuerde que al confirmar esta acción deberá obtener un nuevo ticket si desea ser atendido.");
-                cancerAlert.setPositiveButton("SI",
+                cancerAlert.setTitle(R.string.cancel_turn_dialog_title);
+                cancerAlert.setMessage(R.string.cancel_turn_dialog_message);
+                cancerAlert.setPositiveButton(R.string.cancel_turn_dialog_yes,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO:
+                                cancelTicket();
+                                startActivity(new Intent(TicketActivity.this, MainActivity.class));
                             }
                         });
-                cancerAlert.setNegativeButton("NO",
+                cancerAlert.setNegativeButton(R.string.cancel_turn_dialog_no,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -169,6 +178,12 @@ public class TicketActivity extends AppCompatActivity {
         });
     }
 
+    private void cancelTicket(){
+        SharedPreferences  mPrefs = getSharedPreferences("MyApp", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        prefsEditor.putString("TICKET", "");
+        prefsEditor.commit();
+    }
 
     private Bitmap bitmap;
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
@@ -195,5 +210,27 @@ public class TicketActivity extends AppCompatActivity {
             }
             if(pDialog != null && pDialog.isShowing()) pDialog.dismiss();
         }
+    }
+
+    private void sendNotificationTurnArrived() {
+        //Construction of implicit intent action
+        Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("http://developer.android.com/index.html"));
+        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,0);
+
+        //Construction of the Notification
+        NotificationCompat.Builder builder= new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+        builder.setContentTitle("miTurno en " + mTicket.getCompanyName());
+        builder.setContentText("Ya es tu Turno!!");
+        builder.setSubText("Acércate a la ventanilla 5 para ser atendido.");
+        builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+
+        //Send the notification
+        NotificationManager notificationManager= (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICACION_ID,builder.build());
     }
 }
