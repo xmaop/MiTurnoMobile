@@ -192,8 +192,8 @@ public class TicketActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 postponeAlert = new AlertDialog.Builder(TicketActivity.this);
-                postponeAlert.setTitle(R.string.cancel_turn_dialog_title);
-                postponeAlert.setMessage(R.string.cancel_turn_dialog_message);
+                postponeAlert.setTitle(R.string.postpose_turn_dialog_title);
+                postponeAlert.setMessage(R.string.postpose_turn_dialog_message);
                 postponeAlert.setPositiveButton(R.string.cancel_turn_dialog_yes,
                         new DialogInterface.OnClickListener() {
                             @Override

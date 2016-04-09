@@ -8,4 +8,6 @@
     <string name="cancel_turn_dialog_message">¿Está seguro de cancelar su turno de atención?\nRecuerde que al confirmar esta acción deberá obtener un nuevo ticket si desea ser atendido.</string>
     <string name="cancel_turn_dialog_yes">SI</string>
     <string name="cancel_turn_dialog_no">NO</string>
+    <string name="postpose_turn_dialog_title">Posponer Turno de Atención</string>
+    <string name="postpose_turn_dialog_message">Está seguro que desea posponer su turno de atención\nRecuerde que esta acción situará su turno al final de la cola y le asignará un nuevo ticket de atención</string>
 </resources>
