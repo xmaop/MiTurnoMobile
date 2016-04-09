@@ -42,7 +42,7 @@ import java.util.Date;
 
 import pe.edu.upc.ticket.model.Ticket;
 
-public class TicketActivity extends AppCompatActivity {
+public class TicketActivity extends BatchActivity {
 
     public static final int NOTIFICACION_ID=1;
     private Ticket mTicket = null;

@@ -21,6 +21,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.batch.android.Batch;
+import com.batch.android.Config;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -35,7 +37,7 @@ import java.util.Date;
 
 import pe.edu.upc.ticket.model.Ticket;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BatchActivity {
 
     private SurfaceView cameraView;
     private BarcodeDetector barcodeDetector;
@@ -48,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Batch.Push.setGCMSenderId("614652519184");
+        Batch.setConfig(new Config("DEV57090707105F8E992A818B7204E"));
 
         cameraView = (SurfaceView)findViewById(R.id.camera_view);
         WindowManager mWinMgr = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
@@ -175,4 +180,5 @@ public class MainActivity extends AppCompatActivity {
         }
         prefsEditor.commit();
     }
+
 }
